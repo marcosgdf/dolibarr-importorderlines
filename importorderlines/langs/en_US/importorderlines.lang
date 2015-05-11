@@ -1,0 +1,26 @@
+ImportOrderLinesInfo=Information of Import Order Lines module
+ImportOrderLines=Import order lines
+SelectFileToImport=Select the file you want to import
+UploadFileError=There was a problem while uploading the file
+UploadFileErrorUnsupportedFormat=Uploaded file is not a valid Spreadsheet
+UploadFileErrorFormat=Uploaded file does not match expected document format
+ErrorProductNotFound=Product with ref %s not found
+ErrorAddOrderLine=Error while trying to add product %s to the order
+
+#Admin page
+ImportOrderLinesTitle=Import file
+ImportOrderLinesInfoFormat=The import file is a spreadsheet that has the following format:
+ImportOrderLinesInfoFormatA=Column A: %s
+ImportOrderLinesInfoFormatB=Column B: %s
+ImportOrderLinesInfoFormatC=Column C: %s
+ImportOrderLinesInfoFormatMore=First row will hold the column header in the language configured in Dolibarr. The rest of the columns will be ignored.
+ImportOrderLinesInfoFormatCreate=To generate the import file, access %s » %s » %s and select inputs "%s"
+ImportOrderLinesInfoFormatCreate2= and "%s". Select CSV, Excel 2007 or Excel 95 format and then edit the file to add the column "%s".
+ImportOrderLinesInfoFormatExample=Final result should look like the following:
+ImportOrderLinesInfoFormatExampleImgSrc=example-en_US.png
+ImportOrderLinesInfoFormatExampleImgAlt=Import example
+ImportOrderLinesInfoUsing=How does it work
+ImportOrderLinesInfoUsingOrder=Clients should fill the quantities they want to order in the order file. Then we create a customer order and click the button "%s", then we upload the order file and all products with quantity more or equal to 1 will be added.
+ImportOrderLinesAbout=About
+ImportOrderLinesAuthor=Module developed by Marcos García de La Fuente %s.
+ImportOrderLinesContact=If you experience any problems with the module, you can contact me at %s

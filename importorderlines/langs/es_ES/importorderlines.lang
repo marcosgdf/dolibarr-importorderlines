@@ -1,0 +1,30 @@
+#Module info
+Module402001Name=Importar líneas de pedido desde un archivo Excel
+Module402001Desc=Importa líneas de pedido desde un archivo Excel
+
+ImportOrderLinesInfo=Información del módulo Importación de líneas de pedido
+ImportOrderLines=Importar líneas de pedido
+SelectFileToImport=Seleccione el archivo que desea importar
+UploadFileError=Ha ocurrido un error al subir el archivo
+UploadFileErrorUnsupportedFormat=El archivo subido no es una hoja de cálculo válida
+UploadFileErrorFormat=El archivo subido no contiene el formato de documento esperado
+ErrorProductNotFound=El producto con la referencia %s no ha sido encontrado
+ErrorAddOrderLine=Error al intentar añadir el producto %s al pedido
+
+#Admin page
+ImportOrderLinesTitle=Archivo de importación
+ImportOrderLinesInfoFormat=El archivo de importación es una hoja de cálculo que posee el siguiente formato:
+ImportOrderLinesInfoFormatA=Columna A: %s
+ImportOrderLinesInfoFormatB=Columna B: %s
+ImportOrderLinesInfoFormatC=Columna C: %s
+ImportOrderLinesInfoFormatMore=La primera fila contendrá el título de la columna en el idioma configurado por Dolibarr. El resto de las columnas serán ignoradas.
+ImportOrderLinesInfoFormatCreate=Para generar un archivo de importación, acceda a %s » %s » %s y seleccione los campos "%s"
+ImportOrderLinesInfoFormatCreate2= y "%s". Seleccione el formato CSV, Excel 2007 o Excel 95 y a continuación edite el archivo para añadir la columna "%s".
+ImportOrderLinesInfoFormatExample=El resultado final debería ser parecido al siguiente:
+ImportOrderLinesInfoFormatExampleImgSrc=example-es_ES.png
+ImportOrderLinesInfoFormatExampleImgAlt=Ejemplo de importación
+ImportOrderLinesInfoUsing=Funcionamiento
+ImportOrderLinesInfoUsingOrder=El cliente deberá rellenar la hoja de pedido anotando el número de cantidades que desea de cada producto. Entonces crearemos un pedido de cliente y haremos click sobre el botón "%s", subiremos el archivo y se añadirán al pedido todos aquellos productos que tengan una cantidad igual o superior a 1.
+ImportOrderLinesAbout=Acerca de
+ImportOrderLinesAuthor=Módulo desarrollado por Marcos García de La Fuente %s.
+ImportOrderLinesContact=Si experimenta problemas con el módulo puede contactar conmigo en %s
