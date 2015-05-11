@@ -1,6 +1,6 @@
 #Module info
-Module402001Name=Importar líneas de pedido desde un archivo Excel
-Module402001Desc=Importa líneas de pedido desde un archivo Excel
+Module402001Name=Importar líneas de pedido desde una hoja de cálculo
+Module402001Desc=Importa líneas de pedido desde una hoja de cálculo
 
 ImportOrderLinesInfo=Información del módulo Importación de líneas de pedido
 ImportOrderLines=Importar líneas de pedido

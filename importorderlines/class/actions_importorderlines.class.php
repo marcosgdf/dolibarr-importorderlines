@@ -19,7 +19,7 @@
  * along with Multismtp.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class ActionsImportorderlineexcel
+class ActionsImportorderlines
 {
 	/**
 	 * @param   array()         $parameters     Hook metadatas (context, etc...)

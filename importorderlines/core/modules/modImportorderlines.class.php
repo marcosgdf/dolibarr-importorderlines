@@ -77,7 +77,7 @@ class modImportOrderLines extends DolibarrModules
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
 		$this->name = 'Import order lines';
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
-		$this->description = "Import order lines from spreasheet files";
+		$this->description = "Imports order lines from spreadsheet files";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 		$this->version = '1.0';
 		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
@@ -106,7 +106,7 @@ class modImportOrderLines extends DolibarrModules
 		$this->hidden = false;			// A condition to hide module
 		$this->depends = array(
 			'modCommande',
-			'modProducts'
+			'modProduct'
 		);		// List of modules id that must be enabled if this module is enabled
 		$this->requiredby = array();	// List of modules id to disable if this one is disabled
 		$this->conflictwith = array();	// List of modules id this module is in conflict with

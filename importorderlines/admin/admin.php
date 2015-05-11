@@ -19,7 +19,11 @@
  * along with Multismtp.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require '../../main.inc.php';
+if (file_exists('../../main.inc.php')) {
+	require '../../main.inc.php';
+} else {
+	require '../../../main.inc.php';
+}
 
 $langs->load('admin');
 $langs->load('importorderlines@importorderlines');
