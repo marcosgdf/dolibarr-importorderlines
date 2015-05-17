@@ -204,6 +204,13 @@ class Utils
 		if ($tva_npr)
 			$info_bits |= 0x01;
 
+		//Percent remise
+		if (! empty($object->client->remise_percent)) {
+			$percent_remise = $object->client->remise_percent;
+		} else {
+			$percent_remise=0;
+		}
+
 		// Insert line
 		$result = $object->addline(
 			$desc,
@@ -213,7 +220,7 @@ class Utils
 			$localtax1_tx,
 			$localtax2_tx,
 			$prod->id,
-			0,
+			$percent_remise,
 			$info_bits,
 			0,
 			$price_base_type,
