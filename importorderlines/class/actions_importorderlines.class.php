@@ -112,9 +112,9 @@ class ActionsImportorderlines
 				$activesheet = $excelfd->getActiveSheet();
 
 				//Check of the format
-				$a1 = $activesheet->getCell('A1')->getValue() == $langs->trans('Ref');
-				$b1 = $activesheet->getCell('B1')->getValue() == $langs->trans('Label');
-				$c1 = $activesheet->getCell('C1')->getValue() == $langs->trans('Qty');
+				$a1 = $activesheet->getCell('A1')->getValue() == $langs->transnoentities('Ref');
+				$b1 = $activesheet->getCell('B1')->getValue() == $langs->transnoentities('Label');
+				$c1 = $activesheet->getCell('C1')->getValue() == $langs->transnoentities('Qty');
 
 				if (!$a1 || !$b1 || !$c1) {
 					throw new Exception($langs->trans('UploadFileErrorFormat'));

@@ -1,0 +1,4 @@
+v1.0.1 (17 aug. 2015)
+=====================
+Fixed a problem of format check when using languages with accents. Fix sent by Laurent Léonard of OpenThink SPRL (http://www.openthink.be/)
+
