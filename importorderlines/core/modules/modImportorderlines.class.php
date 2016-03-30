@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2015 Marcos García de La Fuente <hola@marcosgdf.com>
+ * Copyright © 2015-2016 Marcos García de La Fuente <hola@marcosgdf.com>
  *
  * This file is part of Importorderlines.
  *
@@ -38,19 +38,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 	\defgroup   mymodule     Module MyModule
- *  \brief      Example of a module descriptor.
- *				Such a file must be copied into htdocs/mymodule/core/modules directory.
- *  \file       htdocs/mymodule/core/modules/modMyModule.class.php
- *  \ingroup    mymodule
- *  \brief      Description and activation file for module MyModule
- */
 include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
 
 
 /**
- *  Description and activation class for module MyModule
+ *  Description and activation class for module importorderlines
  */
 class modImportOrderLines extends DolibarrModules
 {
@@ -59,7 +51,7 @@ class modImportOrderLines extends DolibarrModules
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function __construct($db)
+	function __construct(DoliDB $db)
 	{
 		global $langs,$conf;
 

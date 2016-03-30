@@ -26,6 +26,8 @@ if (file_exists('../../main.inc.php')) {
 }
 
 $langs->load('admin');
+$langs->load('exports');
+$langs->load('other');
 $langs->load('importorderlines@importorderlines');
 
 llxHeader();
@@ -38,9 +40,9 @@ print_fiche_titre($langs->trans('ImportOrderLinesInfo'), $linkback);
 <div class="titre"><?php echo $langs->trans('ImportOrderLinesTitle') ?></div>
 
 <p><?php echo $langs->trans('ImportOrderLinesInfoFormat') ?></p><ul>
-	<li><?php echo $langs->trans('ImportOrderLinesInfoFormatA', $langs->trans('Ref')) ?></li>
-	<li><?php echo $langs->trans('ImportOrderLinesInfoFormatB', $langs->trans('Label')) ?></li>
-	<li><?php echo $langs->trans('ImportOrderLinesInfoFormatC', $langs->trans('Qty')) ?></li>
+	<li><?php echo $langs->trans('ImportOrderLinesInfoFormatA', $langs->transnoentities('Ref')) ?></li>
+	<li><?php echo $langs->trans('ImportOrderLinesInfoFormatB', $langs->transnoentities('Label')) ?></li>
+	<li><?php echo $langs->trans('ImportOrderLinesInfoFormatC', $langs->transnoentities('Qty')) ?></li>
 </ul>
 <p><?php echo $langs->trans('ImportOrderLinesInfoFormatMore') ?></p>
 <p><?php echo $langs->trans('ImportOrderLinesInfoFormatCreate',

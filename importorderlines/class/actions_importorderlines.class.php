@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2015 Marcos García de La Fuente <hola@marcosgdf.com>
+ * Copyright © 2015-2016 Marcos García de La Fuente <hola@marcosgdf.com>
  *
  * This file is part of Importorderlines.
  *
@@ -22,13 +22,13 @@
 class ActionsImportorderlines
 {
 	/**
-	 * @param   array()         $parameters     Hook metadatas (context, etc...)
-	 * @param   Commande    &$object        The object to process
-	 * @param   string          &$action        Current action (if set). Generally create or edit or null
+	 * @param   array         $parameters     Hook metadatas (context, etc...)
+	 * @param   Commande    $object        The object to process
+	 * @param   string          $action        Current action (if set). Generally create or edit or null
 	 * @param   HookManager     $hookmanager    Hook manager propagated to allow calling another hook
 	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
 	 */
-	public function addMoreActionsButtons($parameters, Commande &$object, &$action, HookManager $hookmanager)
+	public function addMoreActionsButtons(array $parameters, Commande $object, &$action, HookManager $hookmanager)
 	{
 		global $langs;
 
@@ -42,13 +42,13 @@ class ActionsImportorderlines
 	}
 
 	/**
-	 * @param   array()         $parameters     Hook metadatas (context, etc...)
-	 * @param   Commande    &$object        The object to process
-	 * @param   string          &$action        Current action (if set). Generally create or edit or null
+	 * @param   array         $parameters     Hook metadatas (context, etc...)
+	 * @param   Commande    $object        The object to process
+	 * @param   string          $action        Current action (if set). Generally create or edit or null
 	 * @param   HookManager     $hookmanager    Hook manager propagated to allow calling another hook
 	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
 	 */
-	public function formConfirm($parameters, Commande &$object, &$action, HookManager $hookmanager)
+	public function formConfirm(array $parameters, Commande $object, &$action, HookManager $hookmanager)
 	{
 		global $langs, $db, $conf;
 
@@ -58,7 +58,7 @@ class ActionsImportorderlines
 			return 0;
 		}
 
-		require 'Utils.php';
+		require __DIR__.'/Utils.php';
 
 		if ($action == 'import') {
 
@@ -88,7 +88,7 @@ class ActionsImportorderlines
 					throw new Exception($langs->trans('UploadFileError'), $file['error']);
 				}
 
-				require dirname(__FILE__).'/../lib/phpoffice/phpexcel/Classes/PHPExcel.php';
+				require __DIR__.'/../lib/phpoffice/phpexcel/Classes/PHPExcel.php';
 
 				//Supported PHPExcel File readers to ensure we deal with a Spreadsheet.
 				$supported_filereaders = array(
