@@ -10,6 +10,7 @@ UploadFileErrorUnsupportedFormat=El archivo subido no es una hoja de cálculo v�
 UploadFileErrorFormat=El archivo subido no contiene el formato de documento esperado
 ErrorProductNotFound=El producto con la referencia %s no ha sido encontrado
 ErrorAddOrderLine=Error al intentar añadir el producto %s al pedido
+ErrorZipExtensionNotAvailable=La extensión Zip es necesaria y no está disponible en este servidor.
 
 #Admin page
 ImportOrderLinesTitle=Archivo de importación

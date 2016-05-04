@@ -122,33 +122,25 @@ class modImportOrderLines extends DolibarrModules
 	}
 
 	/**
-	 *		Function called when module is enabled.
-	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 *		It also creates data directories
+	 * Function called when module is enabled.
+	 * The init function adds tabs, constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 * It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
-	 *      @return     int             	1 if OK, 0 if KO
+	 * @param string $options   Options when enabling module ('', 'newboxdefonly', 'noboxes')
+	 *                          'noboxes' = Do not insert boxes
+	 *                          'newboxdefonly' = For boxes, insert def of boxes only and not boxes activation
+	 * @return int				1 if OK, 0 if KO
 	 */
-	function init($options='')
+	public function init($options = '')
 	{
-		$sql = array();
+		global $langs;
 
-		return $this->_init($sql, $options);
-	}
+		if (!class_exists('ZipArchive')) {
+			setEventMessage($langs->trans('ErrorZipExtensionNotAvailable'), 'errors');
+			return 0;
+		}
 
-	/**
-	 *		Function called when module is disabled.
-	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 *		Data directories are not deleted
-	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
-	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options='')
-	{
-		$sql = array();
-
-		return $this->_remove($sql, $options);
+		return $this->_init(array(), $options);
 	}
 
 }
