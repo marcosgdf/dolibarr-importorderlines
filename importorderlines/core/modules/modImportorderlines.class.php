@@ -53,8 +53,6 @@ class modImportOrderLines extends DolibarrModules
 	 */
 	function __construct(DoliDB $db)
 	{
-		global $langs,$conf;
-
 		$this->db = $db;
 
 		// Id for module (must be unique).
@@ -109,12 +107,6 @@ class modImportOrderLines extends DolibarrModules
 		$this->const = array();
 		$this->tabs = array();
 
-		// Dictionaries
-		if (! isset($conf->mymodule->enabled))
-		{
-			$conf->mymodule=new stdClass();
-			$conf->mymodule->enabled=0;
-		}
 		$this->dictionaries=array();
 		$this->boxes = array();			// List of boxes
 		$this->rights = array();		// Permission array used by this module

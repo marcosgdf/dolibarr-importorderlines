@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2015 Marcos García de La Fuente <hola@marcosgdf.com>
+ * Copyright © 2015-2016 Marcos García de La Fuente <hola@marcosgdf.com>
  *
  * This file is part of Importorderlines.
  *
@@ -20,9 +20,9 @@
  */
 
 if (file_exists('../../main.inc.php')) {
-	require '../../main.inc.php';
+	require __DIR__.'/../../main.inc.php';
 } else {
-	require '../../../main.inc.php';
+	require __DIR__.'/../../../main.inc.php';
 }
 
 $langs->load('admin');
@@ -33,7 +33,7 @@ $langs->load('importorderlines@importorderlines');
 llxHeader();
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
-print_fiche_titre($langs->trans('ImportOrderLinesInfo'), $linkback);
+print load_fiche_titre($langs->trans('ImportOrderLinesInfo'), $linkback);
 
 ?>
 

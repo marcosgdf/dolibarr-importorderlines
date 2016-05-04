@@ -164,11 +164,12 @@ class ActionsImportorderlines
 			$object->fetch($object->id);
 
 			if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
+
 				// Define output language
 				$outputlangs = $langs;
 				$newlang = GETPOST('lang_id', 'alpha');
 				if (! empty($conf->global->MAIN_MULTILANGS) && empty($newlang))
-					$newlang = $object->client->default_lang;
+					$newlang = $object->thirdparty->default_lang;
 				if (! empty($newlang)) {
 					$outputlangs = new Translate("", $conf);
 					$outputlangs->setDefaultLang($newlang);

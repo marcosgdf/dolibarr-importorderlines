@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2015 Marcos García de La Fuente <hola@marcosgdf.com>
+ * Copyright © 2015-2016 Marcos García de La Fuente <hola@marcosgdf.com>
  *
  * This file is part of Importorderlines.
  *
@@ -102,20 +102,22 @@ class Utils
 	{
 		global $db, $conf, $mysoc, $langs;
 
-		$tva_tx = get_default_tva($mysoc, $object->client, $prod->id);
-		$tva_npr = get_default_npr($mysoc, $object->client, $prod->id);
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
-		if (! empty($conf->global->PRODUIT_MULTIPRICES) && ! empty($object->client->price_level))
+		$tva_tx = get_default_tva($mysoc, $object->thirdparty, $prod->id);
+		$tva_npr = get_default_npr($mysoc, $object->thirdparty, $prod->id);
+
+		if (! empty($conf->global->PRODUIT_MULTIPRICES) && ! empty($object->thirdparty->price_level))
 		{
-			$pu_ht = $prod->multiprices [$object->client->price_level];
-			$pu_ttc = $prod->multiprices_ttc [$object->client->price_level];
-			$price_base_type = $prod->multiprices_base_type [$object->client->price_level];
+			$pu_ht = $prod->multiprices [$object->thirdparty->price_level];
+			$pu_ttc = $prod->multiprices_ttc [$object->thirdparty->price_level];
+			$price_base_type = $prod->multiprices_base_type [$object->thirdparty->price_level];
 
-			if (isset($prod->multiprices_tva_tx[$object->client->price_level])) {
-				$tva_tx=$prod->multiprices_tva_tx[$object->client->price_level];
+			if (isset($prod->multiprices_tva_tx[$object->thirdparty->price_level])) {
+				$tva_tx=$prod->multiprices_tva_tx[$object->thirdparty->price_level];
 			}
-			if (isset($prod->multiprices_recuperableonly[$object->client->price_level])) {
-				$tva_npr=$prod->multiprices_recuperableonly[$object->client->price_level];
+			if (isset($prod->multiprices_recuperableonly[$object->thirdparty->price_level])) {
+				$tva_npr=$prod->multiprices_recuperableonly[$object->thirdparty->price_level];
 			}
 		}
 		elseif (! empty($conf->global->PRODUIT_CUSTOMER_PRICES))
@@ -172,7 +174,7 @@ class Utils
 			if (empty($newlang) && GETPOST('lang_id'))
 				$newlang = GETPOST('lang_id');
 			if (empty($newlang))
-				$newlang = $object->client->default_lang;
+				$newlang = $object->thirdparty->default_lang;
 			if (! empty($newlang)) {
 				$outputlangs = new Translate("", $conf);
 				$outputlangs->setDefaultLang($newlang);
@@ -204,16 +206,16 @@ class Utils
 		}
 
 		// Local Taxes
-		$localtax1_tx = get_localtax($tva_tx, 1, $object->client);
-		$localtax2_tx = get_localtax($tva_tx, 2, $object->client);
+		$localtax1_tx = get_localtax($tva_tx, 1, $object->thirdparty);
+		$localtax2_tx = get_localtax($tva_tx, 2, $object->thirdparty);
 
 		$info_bits = 0;
 		if ($tva_npr)
 			$info_bits |= 0x01;
 
 		//Percent remise
-		if (! empty($object->client->remise_percent)) {
-			$percent_remise = $object->client->remise_percent;
+		if (! empty($object->thirdparty->remise_percent)) {
+			$percent_remise = $object->thirdparty->remise_percent;
 		} else {
 			$percent_remise=0;
 		}
