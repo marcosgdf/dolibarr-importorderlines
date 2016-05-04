@@ -3,6 +3,6 @@
       "phpoffice/phpexcel": "~1.8"
   },
   "config" : {
-      "vendor-dir" : “importorderlines/lib"
+      "vendor-dir" : "importorderlines/lib"
   }
 }
