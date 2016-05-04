@@ -69,7 +69,7 @@ class modImportOrderLines extends DolibarrModules
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Imports order lines from spreadsheet files";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->version = '1.0.1';
+		$this->version = '1.0.2';
 		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_IMPORTORDERLINES';
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
