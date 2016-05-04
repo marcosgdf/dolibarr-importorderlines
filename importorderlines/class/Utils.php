@@ -196,6 +196,13 @@ class Utils
 			$desc = dol_concatdesc($desc, $tmptxt);
 		}
 
+		//3.9.0 version added support for price units
+		if (versioncompare(versiondolibarrarray(), array(3,9,0)) >= 0) {
+			$fk_unit = $prod->fk_unit;
+		} else {
+			$fk_unit = null;
+		}
+
 		// Local Taxes
 		$localtax1_tx = get_localtax($tva_tx, 1, $object->client);
 		$localtax2_tx = get_localtax($tva_tx, 2, $object->client);
@@ -227,7 +234,15 @@ class Utils
 			$pu_ttc,
 			'',
 			'',
-			$prod->type
+			$prod->type,
+			-1,
+			0,
+			0,
+			null,
+			0,
+			'',
+			0,
+			$fk_unit
 		);
 
 		if ($result < 0) {
