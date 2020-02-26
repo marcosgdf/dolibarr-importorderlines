@@ -219,7 +219,6 @@ class Utils
 		} else {
 			$percent_remise=0;
 		}
-
 		// Insert line
 		$result = $object->addline(
 			$desc,
@@ -241,7 +240,7 @@ class Utils
 			0,
 			0,
 			null,
-			0,
+			$prod->cost_price,
 			'',
 			0,
 			$fk_unit

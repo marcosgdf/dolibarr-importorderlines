@@ -122,24 +122,48 @@ class ActionsImportorderlines
 
 				$maxrow = $activesheet->getHighestRow();
 
+				//Verify all products exist and have a positive quantity
 				for ($i = 2; $i <= $maxrow; $i++) {
-
+					$ref = $activesheet->getCellByColumnAndRow(0, $i)->getValue();
 					$qty = (int) $activesheet->getCellByColumnAndRow(2, $i)->getValue();
-
-					if ($qty > 0) {
-
-						$ref = $activesheet->getCellByColumnAndRow(0, $i)->getValue();
-
 						$prod = new Product($db);
-
+						
+						$rowNum =  " [At Row:" . $i . "]";
+						$fileHasErrors = false;
+						
 						if ($prod->fetch('', $ref) <= 0) {
+							$ref = $ref? $ref : "undefined";
+							$ref .= $rowNum;					
+							$fileHasErrors = true;
 							throw new Exception($langs->trans('ErrorProductNotFound', $ref));
 						}
-
-						Utils::addOrderLine($object, $prod, $qty);
+						if ($qty <= 0) {
+							$ref .= $rowNum;
+							$fileHasErrors = true;
+							throw new Exception($langs->trans('ErrorProductInvalidQty', $ref));
+						}
 
 						unset($prod);
+						if($fileHasErrors){
+							//Delete temporary file
+							unlink($file['tmp_name']);
+						}
+				}
+				//Create order lines
+				for ($i = 2; $i <= $maxrow; $i++) {
+
+					$qty = (int) $activesheet->getCellByColumnAndRow(2, $i)->getValue();					
+
+					$ref = $activesheet->getCellByColumnAndRow(0, $i)->getValue();
+
+					$prod = new Product($db);
+
+					if ($prod->fetch('', $ref) <= 0) {
+						throw new Exception($langs->trans('ErrorProductNotFound', $ref));
 					}
+					Utils::addOrderLine($object, $prod, $qty);
+
+					unset($prod);					
 				}
 
 			} catch (Exception $e) {
@@ -180,7 +204,7 @@ class ActionsImportorderlines
 				$hidedesc = (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_DESC) ? 1 : 0);
 				$hideref = (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_REF) ? 1 : 0);
 
-				commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
+				$object->generateDocument($object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
 			}
 
 		}

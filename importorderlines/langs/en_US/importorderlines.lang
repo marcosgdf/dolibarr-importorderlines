@@ -7,6 +7,7 @@ UploadFileErrorFormat=Uploaded file does not match expected document format
 ErrorProductNotFound=Product with ref %s not found
 ErrorAddOrderLine=Error while trying to add product %s to the order
 ErrorZipExtensionNotAvailable=Zip extension is required and it is not available in this server.
+ErrorProductInvalidQty=Product with ref %s has an invalid quantity
 
 #Admin page
 ImportOrderLinesTitle=Import file

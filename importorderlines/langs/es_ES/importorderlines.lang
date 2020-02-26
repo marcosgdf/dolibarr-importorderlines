@@ -11,6 +11,7 @@ UploadFileErrorFormat=El archivo subido no contiene el formato de documento espe
 ErrorProductNotFound=El producto con la referencia %s no ha sido encontrado
 ErrorAddOrderLine=Error al intentar añadir el producto %s al pedido
 ErrorZipExtensionNotAvailable=La extensión Zip es necesaria y no está disponible en este servidor.
+ErrorProductInvalidQty=Producto con la referencia %s tiene una cantidad inválida.
 
 #Admin page
 ImportOrderLinesTitle=Archivo de importación
