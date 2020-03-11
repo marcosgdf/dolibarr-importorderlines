@@ -115,9 +115,15 @@ class ActionsImportorderlines
 				$a1 = $activesheet->getCell('A1')->getValue() == $langs->transnoentities('Ref');
 				$b1 = $activesheet->getCell('B1')->getValue() == $langs->transnoentities('Label');
 				$c1 = $activesheet->getCell('C1')->getValue() == $langs->transnoentities('Qty');
+				$d1 = $activesheet->getCell('D1')->getValue() == $langs->transnoentities('Price');
 
 				if (!$a1 || !$b1 || !$c1) {
 					throw new Exception($langs->trans('UploadFileErrorFormat'));
+				}
+				//Force to use a specific price
+				$usePriceInFile = false;
+				if($d1){
+					$usePriceInFile = true;
 				}
 
 				$maxrow = $activesheet->getHighestRow();
@@ -142,6 +148,14 @@ class ActionsImportorderlines
 							$fileHasErrors = true;
 							throw new Exception($langs->trans('ErrorProductInvalidQty', $ref));
 						}
+						if($usePriceInFile){
+							$priceInFile = (int) $activesheet->getCellByColumnAndRow(3, $i)->getValue();
+							if ($priceInFile <= 0) {
+								$ref .= $rowNum;
+								$fileHasErrors = true;
+								throw new Exception($langs->trans('ErrorProductInvalidPrice', $ref));
+							}
+						}
 
 						unset($prod);
 						if($fileHasErrors){
@@ -161,7 +175,11 @@ class ActionsImportorderlines
 					if ($prod->fetch('', $ref) <= 0) {
 						throw new Exception($langs->trans('ErrorProductNotFound', $ref));
 					}
-					Utils::addOrderLine($object, $prod, $qty);
+					$priceInFile = null;
+					if($usePriceInFile){
+						$priceInFile = (float) $activesheet->getCellByColumnAndRow(3, $i)->getValue();						
+					}					
+					Utils::addOrderLine($object, $prod, $qty, $priceInFile);
 
 					unset($prod);					
 				}

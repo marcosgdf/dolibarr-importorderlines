@@ -98,7 +98,7 @@ class Utils
 	 * @param int $qty Quantity of the product
 	 * @throws Exception
 	 */
-	public static function addOrderLine(Commande $object, Product $prod, $qty)
+	public static function addOrderLine(Commande $object, Product $prod, $qty, $price_in_file = null)
 	{
 		global $db, $conf, $mysoc, $langs;
 
@@ -166,7 +166,12 @@ class Utils
 				$pu_ttc = price2num($pu_ht * (1 + ($tva_tx / 100)), 'MU');
 			}
 		}
-
+		//Force to use a specific price
+		if ( ! empty($price_in_file)){
+			$pu_ht = $price_in_file;
+			$price_base_type = 'HT';
+		}
+		
 		// Define output language
 		if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE)) {
 			$outputlangs = $langs;
