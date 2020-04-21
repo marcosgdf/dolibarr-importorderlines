@@ -116,14 +116,22 @@ class ActionsImportorderlines
 				$b1 = $activesheet->getCell('B1')->getValue() == $langs->transnoentities('Label');
 				$c1 = $activesheet->getCell('C1')->getValue() == $langs->transnoentities('Qty');
 				$d1 = $activesheet->getCell('D1')->getValue() == $langs->transnoentities('Price');
+				$e1 = $activesheet->getCell('E1')->getValue() == $langs->transnoentities('Discount');
 
 				if (!$a1 || !$b1 || !$c1) {
 					throw new Exception($langs->trans('UploadFileErrorFormat'));
 				}
-				//Force to use a specific price
+				//Force to use an specific price by product
 				$usePriceInFile = false;
+				$priceInFile = null;
 				if($d1){
 					$usePriceInFile = true;
+				}
+				//Forse to apply an specific discount by product
+				$useDiscountInFile = false;
+				$discountInFile = null;
+				if($e1){
+					$useDiscountInFile = true;
 				}
 
 				$maxrow = $activesheet->getHighestRow();
@@ -149,11 +157,26 @@ class ActionsImportorderlines
 							throw new Exception($langs->trans('ErrorProductInvalidQty', $ref));
 						}
 						if($usePriceInFile){
-							$priceInFile = (int) $activesheet->getCellByColumnAndRow(3, $i)->getValue();
+							//Use price as float
+							$priceInFile = (float) $activesheet->getCellByColumnAndRow(3, $i)->getValue();							
 							if ($priceInFile <= 0) {
 								$ref .= $rowNum;
 								$fileHasErrors = true;
 								throw new Exception($langs->trans('ErrorProductInvalidPrice', $ref));
+							}
+						}
+
+						if($useDiscountInFile){
+							$discountInFile = $activesheet->getCellByColumnAndRow(4, $i)->getValue();
+							if(!is_numeric($discountInFile)){
+								throw new Exception($langs->trans('ErrorProductInvalidDiscount', $ref));
+							}
+							//Use discount as float
+							$discountInFile = (float) $activesheet->getCellByColumnAndRow(4, $i)->getValue();							
+							if ($discountInFile < 0) {//Discount can be zero
+								$ref .= $rowNum;
+								$fileHasErrors = true;
+								throw new Exception($langs->trans('ErrorProductInvalidDiscount', $ref));
 							}
 						}
 
@@ -175,11 +198,19 @@ class ActionsImportorderlines
 					if ($prod->fetch('', $ref) <= 0) {
 						throw new Exception($langs->trans('ErrorProductNotFound', $ref));
 					}
-					$priceInFile = null;
+					//Use price in file
 					if($usePriceInFile){
-						$priceInFile = (float) $activesheet->getCellByColumnAndRow(3, $i)->getValue();						
-					}					
-					Utils::addOrderLine($object, $prod, $qty, $priceInFile);
+						$priceInFile = (float) $activesheet->getCellByColumnAndRow(3, $i)->getValue();
+						//trunc more than 2 decimals if exist
+						$priceInFile = bcdiv($priceInFile, 1, 2);
+					}
+					//Use discount in file
+					if($useDiscountInFile){
+						$discountInFile = (float) $activesheet->getCellByColumnAndRow(4, $i)->getValue();
+						//trunc more than 2 decimals if exist
+						$discountInFile = bcdiv($discountInFile, 1, 2);
+					}
+					Utils::addOrderLine($object, $prod, $qty, $priceInFile, $discountInFile);
 
 					unset($prod);					
 				}

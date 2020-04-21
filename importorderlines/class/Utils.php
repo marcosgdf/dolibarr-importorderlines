@@ -98,7 +98,7 @@ class Utils
 	 * @param int $qty Quantity of the product
 	 * @throws Exception
 	 */
-	public static function addOrderLine(Commande $object, Product $prod, $qty, $price_in_file = null)
+	public static function addOrderLine(Commande $object, Product $prod, $qty, $price_in_file = null, $discount_in_file = null)
 	{
 		global $db, $conf, $mysoc, $langs;
 
@@ -106,7 +106,7 @@ class Utils
 
 		$tva_tx = get_default_tva($mysoc, $object->thirdparty, $prod->id);
 		$tva_npr = get_default_npr($mysoc, $object->thirdparty, $prod->id);
-
+		
 		if (! empty($conf->global->PRODUIT_MULTIPRICES) && ! empty($object->thirdparty->price_level))
 		{
 			$pu_ht = $prod->multiprices [$object->thirdparty->price_level];
@@ -217,12 +217,15 @@ class Utils
 		$info_bits = 0;
 		if ($tva_npr)
 			$info_bits |= 0x01;
-
+			
 		//Percent remise
 		if (! empty($object->thirdparty->remise_percent)) {
 			$percent_remise = $object->thirdparty->remise_percent;
-		} else {
-			$percent_remise=0;
+		}else if(! empty($discount_in_file)){
+			$percent_remise = $discount_in_file;
+		} 
+		else {
+			$percent_remise = 0;
 		}
 		// Insert line
 		$result = $object->addline(
