@@ -2,7 +2,7 @@
 
 /**
  * Copyright © 2015-2016 Marcos García de La Fuente <hola@marcosgdf.com>
- *
+ * Copyright (C) 2020 Julio Gonzalez <jrgonzalezrios@gmail.com>
  * This file is part of Importorderlines.
  *
  * Multismtp is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ class Utils
 	 * @param int $qty Quantity of the product
 	 * @throws Exception
 	 */
-	public static function addOrderLine(Commande $object, Product $prod, $qty, $price_in_file = null, $discount_in_file = null)
+	public static function addOrderLine(Commande $object, Product $prod, $label, $qty, $price_in_file = null, $cost_in_file = null, $discount_in_file = null)
 	{
 		global $db, $conf, $mysoc, $langs;
 
@@ -171,6 +171,13 @@ class Utils
 			$pu_ht = $price_in_file;
 			$price_base_type = 'HT';
 		}
+
+		//Force to use a specific cost
+		if ( ! empty($cost_in_file)){
+			$product_cost = $cost_in_file;
+		}else{
+			$product_cost = $prod->cost_price;
+		}
 		
 		// Define output language
 		if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE)) {
@@ -201,6 +208,11 @@ class Utils
 				$tmptxt .= $langs->transnoentitiesnoconv("CountryOrigin") . ': ' . getCountry($prod->country_code, 0, $db, $langs, 0);
 			$tmptxt .= ')';
 			$desc = dol_concatdesc($desc, $tmptxt);
+		}
+
+		//Force to use a specific label
+		if ( ! empty($label)){
+			$desc = $label;
 		}
 
 		//3.9.0 version added support for price units
@@ -248,7 +260,7 @@ class Utils
 			0,
 			0,
 			null,
-			$prod->cost_price,
+			$product_cost,
 			'',
 			0,
 			$fk_unit

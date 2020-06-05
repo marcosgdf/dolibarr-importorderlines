@@ -2,7 +2,7 @@
 
 /**
  * Copyright © 2015-2016 Marcos García de La Fuente <hola@marcosgdf.com>
- *
+ * Copyright (C) 2020 Julio Gonzalez <jrgonzalezrios@gmail.com> *
  * This file is part of Importorderlines.
  *
  * Multismtp is free software: you can redistribute it and/or modify
@@ -112,13 +112,26 @@ class ActionsImportorderlines
 				$activesheet = $excelfd->getActiveSheet();
 
 				//Check of the format
-				$a1 = $activesheet->getCell('A1')->getValue() == $langs->transnoentities('Ref');
-				$b1 = $activesheet->getCell('B1')->getValue() == $langs->transnoentities('Label');
-				$c1 = $activesheet->getCell('C1')->getValue() == $langs->transnoentities('Qty');
-				$d1 = $activesheet->getCell('D1')->getValue() == $langs->transnoentities('Price');
-				$e1 = $activesheet->getCell('E1')->getValue() == $langs->transnoentities('Discount');
+				$a1 = $activesheet->getCell('A1')->getValue();
+				$a1 = trim(strtolower($a1));				
+				$a1 = $a1 == 'ref';
+				$b1 = $activesheet->getCell('B1')->getValue();
+				$b1 = trim(strtolower($b1));				
+				$b1 = $b1 == 'label';
+				$c1 = $activesheet->getCell('C1')->getValue();
+				$c1 = trim(strtolower($c1));				
+				$c1 = $c1 == 'qty';
+				$d1 = $activesheet->getCell('D1')->getValue();
+				$d1 = trim(strtolower($d1));				
+				$d1 = $d1 == 'price';
+				$e1 = $activesheet->getCell('E1')->getValue();
+				$e1 = trim(strtolower($e1));				
+				$e1 = $e1 == 'cost';
+				$f1 = $activesheet->getCell('F1')->getValue();
+				$f1 = trim(strtolower($f1));				
+				$f1 = $f1 == 'discount';
 
-				if (!$a1 || !$b1 || !$c1) {
+				if (!$a1 || !$b1 || !$c1 || !$d1 || !$e1) {
 					throw new Exception($langs->trans('UploadFileErrorFormat'));
 				}
 				//Force to use an specific price by product
@@ -127,10 +140,18 @@ class ActionsImportorderlines
 				if($d1){
 					$usePriceInFile = true;
 				}
-				//Forse to apply an specific discount by product
+
+				//Force to use an specific cost by product
+				$useCostInFile = false;
+				$costInFile = null;
+				if($e1){
+					$useCostInFile = true;
+				}
+
+				//Force to apply an specific discount by product
 				$useDiscountInFile = false;
 				$discountInFile = null;
-				if($e1){
+				if($f1){
 					$useDiscountInFile = true;
 				}
 
@@ -165,14 +186,23 @@ class ActionsImportorderlines
 								throw new Exception($langs->trans('ErrorProductInvalidPrice', $ref));
 							}
 						}
+						if($useCostInFile){
+							//Use cost as float
+							$costInFile = (float) $activesheet->getCellByColumnAndRow(4, $i)->getValue();							
+							if ($costInFile <= 0) {
+								$ref .= $rowNum;
+								$fileHasErrors = true;
+								throw new Exception($langs->trans('ErrorProductInvalidCost', $ref));
+							}
+						}
 
 						if($useDiscountInFile){
-							$discountInFile = $activesheet->getCellByColumnAndRow(4, $i)->getValue();
+							$discountInFile = $activesheet->getCellByColumnAndRow(5, $i)->getValue();
 							if(!is_numeric($discountInFile)){
 								throw new Exception($langs->trans('ErrorProductInvalidDiscount', $ref));
 							}
 							//Use discount as float
-							$discountInFile = (float) $activesheet->getCellByColumnAndRow(4, $i)->getValue();							
+							$discountInFile = (float) $activesheet->getCellByColumnAndRow(5, $i)->getValue();							
 							if ($discountInFile < 0) {//Discount can be zero
 								$ref .= $rowNum;
 								$fileHasErrors = true;
@@ -188,10 +218,9 @@ class ActionsImportorderlines
 				}
 				//Create order lines
 				for ($i = 2; $i <= $maxrow; $i++) {
-
-					$qty = (int) $activesheet->getCellByColumnAndRow(2, $i)->getValue();					
-
 					$ref = $activesheet->getCellByColumnAndRow(0, $i)->getValue();
+					$label = $activesheet->getCellByColumnAndRow(1, $i)->getValue();
+					$qty = (int) $activesheet->getCellByColumnAndRow(2, $i)->getValue();					
 
 					$prod = new Product($db);
 
@@ -204,13 +233,19 @@ class ActionsImportorderlines
 						//trunc more than 2 decimals if exist
 						$priceInFile = bcdiv($priceInFile, 1, 2);
 					}
+					//Use cost in file
+					if($useCostInFile){
+						$costInFile = (float) $activesheet->getCellByColumnAndRow(4, $i)->getValue();
+						//trunc more than 2 decimals if exist
+						$costInFile = bcdiv($costInFile, 1, 4);
+					}
 					//Use discount in file
 					if($useDiscountInFile){
-						$discountInFile = (float) $activesheet->getCellByColumnAndRow(4, $i)->getValue();
+						$discountInFile = (float) $activesheet->getCellByColumnAndRow(5, $i)->getValue();
 						//trunc more than 2 decimals if exist
 						$discountInFile = bcdiv($discountInFile, 1, 2);
 					}
-					Utils::addOrderLine($object, $prod, $qty, $priceInFile, $discountInFile);
+					Utils::addOrderLine($object, $prod, $label, $qty, $priceInFile, $costInFile, $discountInFile);
 
 					unset($prod);					
 				}
