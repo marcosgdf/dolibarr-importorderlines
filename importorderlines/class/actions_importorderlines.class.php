@@ -2,7 +2,7 @@
 
 /**
  * Copyright © 2015-2016 Marcos García de La Fuente <hola@marcosgdf.com>
- *
+ * Copyright (C) 2020 Julio Gonzalez <jrgonzalezrios@gmail.com> *
  * This file is part of Importorderlines.
  *
  * Multismtp is free software: you can redistribute it and/or modify
@@ -112,34 +112,142 @@ class ActionsImportorderlines
 				$activesheet = $excelfd->getActiveSheet();
 
 				//Check of the format
-				$a1 = $activesheet->getCell('A1')->getValue() == $langs->transnoentities('Ref');
-				$b1 = $activesheet->getCell('B1')->getValue() == $langs->transnoentities('Label');
-				$c1 = $activesheet->getCell('C1')->getValue() == $langs->transnoentities('Qty');
+				$a1 = $activesheet->getCell('A1')->getValue();
+				$a1 = trim(strtolower($a1));				
+				$a1 = $a1 == 'ref';
+				$b1 = $activesheet->getCell('B1')->getValue();
+				$b1 = trim(strtolower($b1));				
+				$b1 = $b1 == 'label';
+				$c1 = $activesheet->getCell('C1')->getValue();
+				$c1 = trim(strtolower($c1));				
+				$c1 = $c1 == 'qty';
+				$d1 = $activesheet->getCell('D1')->getValue();
+				$d1 = trim(strtolower($d1));				
+				$d1 = $d1 == 'price';
+				$e1 = $activesheet->getCell('E1')->getValue();
+				$e1 = trim(strtolower($e1));				
+				$e1 = $e1 == 'cost';
+				$f1 = $activesheet->getCell('F1')->getValue();
+				$f1 = trim(strtolower($f1));				
+				$f1 = $f1 == 'discount';
 
-				if (!$a1 || !$b1 || !$c1) {
+				if (!$a1 || !$b1 || !$c1 || !$d1 || !$e1) {
 					throw new Exception($langs->trans('UploadFileErrorFormat'));
+				}
+				//Force to use an specific price by product
+				$usePriceInFile = false;
+				$priceInFile = null;
+				if($d1){
+					$usePriceInFile = true;
+				}
+
+				//Force to use an specific cost by product
+				$useCostInFile = false;
+				$costInFile = null;
+				if($e1){
+					$useCostInFile = true;
+				}
+
+				//Force to apply an specific discount by product
+				$useDiscountInFile = false;
+				$discountInFile = null;
+				if($f1){
+					$useDiscountInFile = true;
 				}
 
 				$maxrow = $activesheet->getHighestRow();
 
+				//Verify all products exist and have a positive quantity
 				for ($i = 2; $i <= $maxrow; $i++) {
-
+					$ref = $activesheet->getCellByColumnAndRow(0, $i)->getValue();
 					$qty = (int) $activesheet->getCellByColumnAndRow(2, $i)->getValue();
-
-					if ($qty > 0) {
-
-						$ref = $activesheet->getCellByColumnAndRow(0, $i)->getValue();
-
 						$prod = new Product($db);
-
+						
+						$rowNum =  " [At Row:" . $i . "]";
+						$fileHasErrors = false;
+						
 						if ($prod->fetch('', $ref) <= 0) {
+							$ref = $ref? $ref : "undefined";
+							$ref .= $rowNum;					
+							$fileHasErrors = true;
 							throw new Exception($langs->trans('ErrorProductNotFound', $ref));
 						}
+						if ($qty <= 0) {
+							$ref .= $rowNum;
+							$fileHasErrors = true;
+							throw new Exception($langs->trans('ErrorProductInvalidQty', $ref));
+						}
+						if($usePriceInFile){
+							//Use price as float
+							$priceInFile = (float) $activesheet->getCellByColumnAndRow(3, $i)->getValue();							
+							if ($priceInFile <= 0) {
+								$ref .= $rowNum;
+								$fileHasErrors = true;
+								throw new Exception($langs->trans('ErrorProductInvalidPrice', $ref));
+							}
+						}
+						if($useCostInFile){
+							//Use cost as float
+							$costInFile = (float) $activesheet->getCellByColumnAndRow(4, $i)->getValue();							
+							if ($costInFile <= 0) {
+								$ref .= $rowNum;
+								$fileHasErrors = true;
+								throw new Exception($langs->trans('ErrorProductInvalidCost', $ref));
+							}
+						}
 
-						Utils::addOrderLine($object, $prod, $qty);
+						if($useDiscountInFile){
+							$discountInFile = $activesheet->getCellByColumnAndRow(5, $i)->getValue();
+							if(!is_numeric($discountInFile)){
+								throw new Exception($langs->trans('ErrorProductInvalidDiscount', $ref));
+							}
+							//Use discount as float
+							$discountInFile = (float) $activesheet->getCellByColumnAndRow(5, $i)->getValue();							
+							if ($discountInFile < 0) {//Discount can be zero
+								$ref .= $rowNum;
+								$fileHasErrors = true;
+								throw new Exception($langs->trans('ErrorProductInvalidDiscount', $ref));
+							}
+						}
 
 						unset($prod);
+						if($fileHasErrors){
+							//Delete temporary file
+							unlink($file['tmp_name']);
+						}
+				}
+				//Create order lines
+				for ($i = 2; $i <= $maxrow; $i++) {
+					$ref = $activesheet->getCellByColumnAndRow(0, $i)->getValue();
+					$label = $activesheet->getCellByColumnAndRow(1, $i)->getValue();
+					$qty = (int) $activesheet->getCellByColumnAndRow(2, $i)->getValue();					
+
+					$prod = new Product($db);
+
+					if ($prod->fetch('', $ref) <= 0) {
+						throw new Exception($langs->trans('ErrorProductNotFound', $ref));
 					}
+					//Use price in file
+					if($usePriceInFile){
+						$priceInFile = (float) $activesheet->getCellByColumnAndRow(3, $i)->getValue();
+						//trunc more than 2 decimals if exist
+						$priceInFile = bcdiv($priceInFile, 1, 2);
+					}
+					//Use cost in file
+					if($useCostInFile){
+						$costInFile = (float) $activesheet->getCellByColumnAndRow(4, $i)->getValue();
+						//trunc more than 2 decimals if exist
+						$costInFile = bcdiv($costInFile, 1, 4);
+					}
+					//Use discount in file
+					if($useDiscountInFile){
+						$discountInFile = (float) $activesheet->getCellByColumnAndRow(5, $i)->getValue();
+						//trunc more than 2 decimals if exist
+						$discountInFile = bcdiv($discountInFile, 1, 2);
+					}
+					Utils::addOrderLine($object, $prod, $label, $qty, $priceInFile, $costInFile, $discountInFile);
+
+					unset($prod);					
 				}
 
 			} catch (Exception $e) {
@@ -180,7 +288,7 @@ class ActionsImportorderlines
 				$hidedesc = (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_DESC) ? 1 : 0);
 				$hideref = (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_REF) ? 1 : 0);
 
-				commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
+				$object->generateDocument($object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
 			}
 
 		}

@@ -2,7 +2,7 @@
 
 /**
  * Copyright © 2015-2016 Marcos García de La Fuente <hola@marcosgdf.com>
- *
+ * Copyright (C) 2020 Julio Gonzalez <jrgonzalezrios@gmail.com>
  * This file is part of Importorderlines.
  *
  * Multismtp is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ class Utils
 	 * @param int $qty Quantity of the product
 	 * @throws Exception
 	 */
-	public static function addOrderLine(Commande $object, Product $prod, $qty)
+	public static function addOrderLine(Commande $object, Product $prod, $label, $qty, $price_in_file = null, $cost_in_file = null, $discount_in_file = null)
 	{
 		global $db, $conf, $mysoc, $langs;
 
@@ -106,7 +106,7 @@ class Utils
 
 		$tva_tx = get_default_tva($mysoc, $object->thirdparty, $prod->id);
 		$tva_npr = get_default_npr($mysoc, $object->thirdparty, $prod->id);
-
+		
 		if (! empty($conf->global->PRODUIT_MULTIPRICES) && ! empty($object->thirdparty->price_level))
 		{
 			$pu_ht = $prod->multiprices [$object->thirdparty->price_level];
@@ -166,7 +166,19 @@ class Utils
 				$pu_ttc = price2num($pu_ht * (1 + ($tva_tx / 100)), 'MU');
 			}
 		}
+		//Force to use a specific price
+		if ( ! empty($price_in_file)){
+			$pu_ht = $price_in_file;
+			$price_base_type = 'HT';
+		}
 
+		//Force to use a specific cost
+		if ( ! empty($cost_in_file)){
+			$product_cost = $cost_in_file;
+		}else{
+			$product_cost = $prod->cost_price;
+		}
+		
 		// Define output language
 		if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE)) {
 			$outputlangs = $langs;
@@ -198,6 +210,11 @@ class Utils
 			$desc = dol_concatdesc($desc, $tmptxt);
 		}
 
+		//Force to use a specific label
+		if ( ! empty($label)){
+			$desc = $label;
+		}
+
 		//3.9.0 version added support for price units
 		if (versioncompare(versiondolibarrarray(), array(3,9,0)) >= 0) {
 			$fk_unit = $prod->fk_unit;
@@ -212,14 +229,16 @@ class Utils
 		$info_bits = 0;
 		if ($tva_npr)
 			$info_bits |= 0x01;
-
+			
 		//Percent remise
 		if (! empty($object->thirdparty->remise_percent)) {
 			$percent_remise = $object->thirdparty->remise_percent;
-		} else {
-			$percent_remise=0;
+		}else if(! empty($discount_in_file)){
+			$percent_remise = $discount_in_file;
+		} 
+		else {
+			$percent_remise = 0;
 		}
-
 		// Insert line
 		$result = $object->addline(
 			$desc,
@@ -241,7 +260,7 @@ class Utils
 			0,
 			0,
 			null,
-			0,
+			$product_cost,
 			'',
 			0,
 			$fk_unit

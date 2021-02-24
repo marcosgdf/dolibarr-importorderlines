@@ -1,6 +1,6 @@
 #Module info
-Module402001Name=Importar líneas de pedido desde una hoja de cálculo
-Module402001Desc=Importa líneas de pedido desde una hoja de cálculo
+Module402002Name=Importar líneas de pedido desde una hoja de cálculo
+Module402002Desc=Importa líneas de pedido desde una hoja de cálculo
 
 ImportOrderLinesInfo=Información del módulo Importación de líneas de pedido
 ImportOrderLines=Importar líneas de pedido
@@ -11,6 +11,9 @@ UploadFileErrorFormat=El archivo subido no contiene el formato de documento espe
 ErrorProductNotFound=El producto con la referencia %s no ha sido encontrado
 ErrorAddOrderLine=Error al intentar añadir el producto %s al pedido
 ErrorZipExtensionNotAvailable=La extensión Zip es necesaria y no está disponible en este servidor.
+ErrorProductInvalidQty=Producto con la referencia %s tiene una cantidad inválida.
+ErrorProductInvalidCost=Producto con la referencia %s tiene un costo inválido.
+ErrorProductInvalidDiscount=Producto con la referencia %s tiene un descuento inválido.
 
 #Admin page
 ImportOrderLinesTitle=Archivo de importación

@@ -1,12 +1,20 @@
+#Module info
+Module402002Name=Import order lines from a file
+Module402002Desc=With this module you can import order lines to a customer order from a spreadsheet file in format .xls, .xlsx, .ods and .csv.
+
 ImportOrderLinesInfo=Information of Import Order Lines module
 ImportOrderLines=Import order lines
 SelectFileToImport=Select the file you want to import
 UploadFileError=There was a problem while uploading the file
 UploadFileErrorUnsupportedFormat=Uploaded file is not a valid Spreadsheet
-UploadFileErrorFormat=Uploaded file does not match expected document format
+UploadFileErrorFormat=Uploaded file does not match expected document format [Ref, Label, Qty, Price, Cost], Discount (optional)
 ErrorProductNotFound=Product with ref %s not found
 ErrorAddOrderLine=Error while trying to add product %s to the order
 ErrorZipExtensionNotAvailable=Zip extension is required and it is not available in this server.
+ErrorProductInvalidQty=Product with ref %s has an invalid quantity
+ErrorProductInvalidPrice=Product with ref %s has an invalid price
+ErrorProductInvalidCost=Product with ref %s has an invalid cost
+ErrorProductInvalidDiscount=Product with ref %s has an invalid discount
 
 #Admin page
 ImportOrderLinesTitle=Import file

@@ -1,3 +1,9 @@
+v1.0.3 (4 may 2020)
+=====================
+Added support for dolibar >10.3
+Fix PDF generate after lines imported
+Add support for price, cost and discount for order lines
+
 v1.0.2 (4 may 2016)
 =====================
 Added support for 3.9 feature of product units and added missing requirement of Zip extension
